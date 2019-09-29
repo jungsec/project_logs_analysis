@@ -73,6 +73,8 @@ Give an example
 ## Authors
 
 * **jungsec** - *Initial work* - [github](https://github.com/jungsec/)
+* **GMEddy**  - *worker project* - [github] (https://github.com/GMEddy/)
+
 
 See also the list of [contributors](https://github.com/jungsec/project_logs_analysis/graphs/contributors) who participated in this project.
 
