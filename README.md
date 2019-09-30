@@ -17,7 +17,7 @@ sudo apt install python3
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+None for the moment
 
 Say what the step will be
 
