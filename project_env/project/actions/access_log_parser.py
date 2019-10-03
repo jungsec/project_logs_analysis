@@ -1,10 +1,10 @@
+# coding : utf-8
+
 """
 Name of the file : access_log_parser.py
 Description : the script access_log_parser will read and collect 
 the information from a access log file
 """
-
-
 
 
 #Import libraries needed for the script
@@ -23,4 +23,5 @@ __version__ = '0.0.1'
 __maintainer__ = 'GMEddy'
 __email__ = ''
 __status__ = 'Get_access_log'
+
 
