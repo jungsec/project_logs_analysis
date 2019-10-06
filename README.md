@@ -74,6 +74,7 @@ Give an example
 
 * **jungsec** - *Initial work* - [github](https://github.com/jungsec/)
 * **GMEddy**  - *worker project* - [github](https://github.com/GMEddy/)
+* **kylewenceslas**  - *worker project* - [github](https://github.com/koemankyle)
 
 
 See also the list of [contributors](https://github.com/jungsec/project_logs_analysis/graphs/contributors) who participated in this project.
