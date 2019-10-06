@@ -30,9 +30,10 @@ CustomLog logs/access_log commo
 IP adress - frank [day/mounth/year:hour:minutes:secondes zone] "GET /apache_pb.gif HTTP/1.0" 200 2326 "http://www.example.com/start.html" "Mozilla/4.08 [en] (Win98; I ;Nav)" 
 
 """
-"""
-#using awk fonction 
-with open('/home/eddy/Bureau/Projet_python/project_logs_analysis/project_env/project/actions/test_access.log',"r") as f :
+
+#using awk fonction to get only the section we want 
+
+"""with open('/PATH/',"r") as f :
 
     for lines in f:
         fields = lines.strip("\n").split(" ")
@@ -49,30 +50,28 @@ with open('/home/eddy/Bureau/Projet_python/project_logs_analysis/project_env/pro
 """
 #grep version 
 
-with open("","r") as fichier : 
+with open("/PATH/","r") as fichier : 
     for lignes in fichier : 
         #109.169.248.247 - - [12/Dec/2015:18:25:11 +0100] "GET /administrator/ HTTP/1.1" 200 4263 "-" "Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0" "-"
-        ip_adresslo = re.search(r'^([0-9\.]+)', lignes)
-        timelo = re.search(r'([[0-9A-Za-z/]+[:0-9]+ [+0-9]+)', lignes)
-        requestlo = re.search(r'([A-Z]* /[a-zA-Z/._-]*[ a-zA-Z.-_/0-9]*/?[0-9.]*)', lignes)
-        reponselo = re.search(r'([0-9]+ [0-9]+)', lignes)
-        navlo = re.search(r'("[A-Za-z]+/[0-9;/.()A-Za-z -]+)', lignes)
-        if ip_adresslo and timelo :  
-           print("Adresse IP : ",ip_adresslo.group(1), "date access :",timelo.group(1))
-           #print("Date access: ",timelo.group(1))
-        #if requestlo and reponselo :
-         #   print ("request :" , requestlo.group(1))
-          #  print ("reponse :" , reponselo.group(1))
-
+        ip_adresslo = re.search(r'^([0-9\.]+)', lignes) #REGEX to get the IP adress section
+        timelo = re.search(r'([[0-9A-Za-z/]+[:0-9]+ [+0-9]+)', lignes)#REGEX to get the date and time section
+        requestlo = re.search(r'([A-Z]* /[a-zA-Z/._-]*[ a-zA-Z.-_/0-9]*/?[0-9.]*)', lignes)#REGEX to get the request section
+        reponselo = re.search(r'([0-9]+ [0-9]+)', lignes)#REGEX to get the reponse and package section
+        navlo = re.search(r'("[A-Za-z]+/[0-9;/.()A-Za-z -]+)', lignes)#REGEX to get the navigator ect
+        if ip_adresslo and timelo and requestlo and reponselo : #if condition for each parameters  
+           print("Adresse IP : ",ip_adresslo.group(1),"Date access :",timelo.group(1),"request :",requestlo.group(1),"reponse :",reponselo.group(1)) #show parameters matching  
         #if navlo :
               #print ("navigation :" , navlo.group(1))
         else:
-            print("pas de donnée ")
+            print("pas de donnée ")#no match
+        
 
 """
-Write a funstion who will return "lignes" and after "lignes" will be use as object in the other fonction 
+Write a function who will return "lignes" and after "lignes" will be use as object in the other fonction 
 to collect the information needed 
 """
 
-
+"""
+Next time lets combined tab and regex to show only what we need 
+"""
         
