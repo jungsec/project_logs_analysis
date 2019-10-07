@@ -7,7 +7,7 @@ Description : The aim of this file is to read any log file
 call read_log_file() for testing
 """
 
-import sys 
+import sys
 
 __author__ = 'jungsec'
 __copyright__ = ''
@@ -20,9 +20,9 @@ __status__ = 'Prototype'
 
 
 def read_log_file(log_file=sys.argv[1]):
-        """
-        This function take for argument the log file and read it 
-        """
-        with open(log_file) as log_file:
-                read_log_file = log_file.read()
-        return read_log_file
+    """
+    This function take for argument the log file and read it
+    """
+    with open(log_file) as log_file:
+        read_log_file = log_file.read()
+    return read_log_file

@@ -1,4 +1,8 @@
 bin
 **/lib/python*
+**/lib64/python*
+include
 local
 share
+__pycache__
+.idea
