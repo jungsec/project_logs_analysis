@@ -1,0 +1,6 @@
+{
+  "Apache access log": ["Adresse Ip", "Date", "Temps", "email", "Requête HTTP"],
+  "Nginx access log":  [],
+  "CVS file": [],
+  "Linux Syslog": []
+}
