@@ -20,6 +20,8 @@ from tkinter.constants import *
 
 
 def find_filter_field(log_type_var, field_index, input_var, results_listbox, file_path):
+    if not file_path: return
+
     if log_type_var.get() == "Apache access log":
         if field_index == 0:
             results_listbox.delete(0, END)
