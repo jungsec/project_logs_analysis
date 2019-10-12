@@ -18,6 +18,7 @@ from tkinter import (Tk, Label, StringVar, OptionMenu, Entry, Button,
                      filedialog, Listbox, Scrollbar)
 from frontend.scrollable_table import ScrollableTable
 from tkinter.constants import *
+from frontend.controller import find_filter_field
 import json
 import os
 import sys
@@ -27,15 +28,15 @@ HEADER_MSG_LABEL = 'Times 12 bold'
 WIN = not sys.platform.startswith('lin')
 
 with open('{folder_abs_path}{separator}file_properties.json'.format(
-                folder_abs_path=os.path.dirname(os.path.realpath(__file__)),
-                separator="\\" if WIN else "/"
-        ), 'r') as f:
+        folder_abs_path=os.path.dirname(os.path.realpath(__file__)),
+        separator="\\" if WIN else "/"
+), 'r') as f:
     FILE_PROPERTIES = json.loads(f.read())
 
 FILE_INFO = {'path': ''}
 
 
-def center_window(parent, w=None, h=None): # or w=1500, h =1200
+def center_window(parent, w=None, h=None):  # or w=1500, h =1200
     """ to center the main window on the screen """
     # get screen width and height
     ws = parent.winfo_screenwidth()
@@ -61,7 +62,12 @@ def open_file(load_file_label):
                                           filetypes=(("Tout type", "*.*"),))
     if filename:
         FILE_INFO['path'] = filename
-        load_file_label['text'] = to_nb_chars(filename, nb=100)
+        load_file_label['text'] = to_nb_chars(filename, nb=120)
+
+
+# we change dropdown value
+def change_log_file_type(log_type_var):
+    print(log_type_var.get())
 
 
 def launch_app():
@@ -87,21 +93,17 @@ def launch_app():
     file_type = Label(mainframe, text="Type de fichier:", font=LABEL_BOLD_FONT)
     file_type.grid(row=2, sticky=E, padx=20, pady=20)
 
-    tkvar = StringVar(mainframe)
+    log_type_var = StringVar(mainframe)
 
     # Set with options
     choices = list(FILE_PROPERTIES.keys())
-    tkvar.set(choices[0])  # set the default option
+    log_type_var.set(choices[0])  # set the default option
 
-    popupmenu = OptionMenu(mainframe, tkvar, *choices)
-    popupmenu.grid(row=2, column=1)
-
-    # we change dropdown value
-    def change_dropdown(*args):
-        print(tkvar.get())
+    log_file_types = OptionMenu(mainframe, log_type_var, *choices)
+    log_file_types.grid(row=2, column=1)
 
     # link function to change dropdown
-    tkvar.trace('w', change_dropdown)
+    log_type_var.trace('w', lambda *args: change_log_file_type(log_type_var))
 
     file_name = Label(mainframe, text="Nom du fichier:", font=LABEL_BOLD_FONT)
     file_name.grid(row=3, sticky=E, padx=20, pady=20)
@@ -109,13 +111,7 @@ def launch_app():
     nb_lines = Label(mainframe, text="Nombre de lignes:", font=LABEL_BOLD_FONT)
     nb_lines.grid(row=4, sticky=E, padx=20, pady=20)
 
-    # first_date_time = Label(mainframe, text="Première date/heure:", font=LABEL_BOLD_FONT)
-    # first_date_time.grid(row=5, sticky=E, padx=20, pady=20)
-
-    # last_date_time = Label(mainframe, text="Dernière date/heure:", font=LABEL_BOLD_FONT)
-    # last_date_time.grid(row=6, sticky=E, padx=20, pady=20)
-
-    columns_names = FILE_PROPERTIES[tkvar.get()]
+    columns_names = FILE_PROPERTIES[log_type_var.get()]
     searched_columns = {}
     searched_buttons = {}
     searched_result_listboxes = {}
@@ -127,19 +123,22 @@ def launch_app():
         new_search_entry = Entry(mainframe, textvariable=searched_columns[column_value])
         new_search_entry.grid(row=column_index + 2, column=3, padx=20, pady=20, sticky=W)
 
-        new_search_button = Button(mainframe, text='->', command=do_nothing)
-        new_search_button.grid(row=column_index + 2, column=4, padx=20, pady=20, sticky=W + E)
-        searched_buttons[column_value] = new_search_button
-
         new_listbox = Listbox(mainframe)
         new_listbox.grid(row=column_index + 2, column=5, padx=20, pady=20, sticky=W + E)
         new_scrollbar = Scrollbar(mainframe, orient=VERTICAL, command=new_listbox.yview, width=30)
-        new_scrollbar.grid(row=column_index+2, column=6)
+        new_scrollbar.grid(row=column_index + 2, column=6)
         new_listbox.config(height=5, width=40, yscrollcommand=new_scrollbar.set)
         searched_result_listboxes[column_value] = new_listbox
 
-        new_listbox.delete(0, END)
-        new_listbox.insert(0, *["Au", "Cameroun", "Berceau", "De", "Nos", "Ancetres", "Va", "Debout", "Et", "Jaloux", "De", "Ta", "Liberté"])
+        new_search_button = Button(mainframe, text='->', command=lambda
+            local_log_type_var=log_type_var,
+            local_index=column_index,
+            local_searched_column=searched_columns[column_value],
+            local_result_list_box=searched_result_listboxes[column_value]
+        : find_filter_field(
+            local_log_type_var, local_index, local_searched_column, local_result_list_box, FILE_INFO['path']))
+        new_search_button.grid(row=column_index + 2, column=4, padx=20, pady=20, sticky=W + E)
+        searched_buttons[column_value] = new_search_button
 
     search_button = Button(mainframe, text='Rechercher', command=do_nothing)
     search_button.grid(row=len(columns_names) + 2, column=3, sticky=W, padx=20, pady=20)
