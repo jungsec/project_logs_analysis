@@ -5,11 +5,11 @@ Name of the file : lacuncher.py
 Description : The aim of this file is to launch the program
 """
 
-__author__ = 'koeman'
+__author__ = 'koeman,jungsec'
 __copyright__ = ''
 __credits__ = ['']
 __licence__ = ''
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __maintainer__ = ''
 __email__ = ''
 __status__ = ''
@@ -17,6 +17,7 @@ __status__ = ''
 from tkinter import (Tk, Label, StringVar, OptionMenu, Entry, Button,
                      filedialog, Listbox, Scrollbar, Frame)
 from frontend.scrollable_table import ScrollableTable
+from frontend.static_data_log_file import *
 from tkinter.constants import *
 from frontend.controller import find_filter_field
 import json
@@ -57,12 +58,14 @@ def to_nb_chars(my_string, nb=20):
     return my_string[:nb - 3] + '...' if len(my_string) > nb else my_string
 
 
-def open_file(load_file_label):
+def open_file(load_file_label, number_lines_file_label, name_file_label):
     filename = filedialog.askopenfilename(initialdir="/", title="Choisissez le fichier",
                                           filetypes=(("Tout type", "*.*"),))
     if filename:
         FILE_INFO['path'] = filename
         load_file_label['text'] = to_nb_chars(filename, nb=120)
+        number_lines_file_label['text'] = number_of_line(FILE_INFO['path'])
+        name_file_label['text'] = name_file(FILE_INFO['path'])
 
 
 # we change dropdown value
@@ -89,7 +92,7 @@ def launch_app():
                          font=HEADER_MSG_LABEL)
     header_label.grid(row=0, columnspan=6, padx=20, pady=20)
 
-    load_file_button = Button(mainframe, text='Sélectionner le fichier', command=lambda: open_file(load_file_label))
+    load_file_button = Button(mainframe, text='Sélectionner le fichier', command=lambda: open_file(load_file_label, number_lines_file_label, name_file_label))
     load_file_button.grid(row=1, column=0, sticky=E, padx=20, pady=20)
 
     load_file_label = Label(mainframe, text=FILE_INFO['path'], font="Arial 10 italic")
@@ -114,9 +117,13 @@ def launch_app():
 
     file_name = Label(mainframe, text="Nom du fichier:", font=LABEL_BOLD_FONT)
     file_name.grid(row=3, sticky=E, padx=20, pady=20)
+    name_file_label = Label(mainframe, text='', font="Arial 10 italic")
+    name_file_label.grid(row=3, column=1, columnspan=3, sticky=W, padx=20, pady=20)
 
     nb_lines = Label(mainframe, text="Nombre de lignes:", font=LABEL_BOLD_FONT)
     nb_lines.grid(row=4, sticky=E, padx=20, pady=20)
+    number_lines_file_label = Label(mainframe, text='', font="Arial 10 italic")
+    number_lines_file_label.grid(row=4, column=1, columnspan=3, sticky=W, padx=20, pady=20)
 
     for log_type_name in choices:
         filter_frame = Frame(mainframe)
