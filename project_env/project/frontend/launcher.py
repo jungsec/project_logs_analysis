@@ -16,10 +16,11 @@ __status__ = ''
 
 from tkinter import (Tk, Label, StringVar, OptionMenu, Entry, Button,
                      filedialog, Listbox, Scrollbar, Frame)
-from frontend.scrollable_table import ScrollableTable
+
 from frontend.static_data_log_file import *
 from tkinter.constants import *
 from frontend.controller import find_filter_field
+from frontend.result_modal import show_result_modal
 import json
 import os
 import sys
@@ -50,25 +51,22 @@ def center_window(parent, w=None, h=None):  # or w=1500, h =1200
     parent.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
-def do_nothing():
-    pass
-
-
 def to_nb_chars(my_string, nb=20):
     return my_string[:nb - 3] + '...' if len(my_string) > nb else my_string
 
 
 def open_file(load_file_label, number_lines_file_label, name_file_label):
-    filename = filedialog.askopenfilename(initialdir="/", title="Choisissez le fichier",
-                                          filetypes=(("Tout type", "*.*"),))
-    if filename:
-        FILE_INFO['path'] = filename
-        load_file_label['text'] = to_nb_chars(filename, nb=120)
+    file_path = filedialog.askopenfilename(initialdir="/", title="Choisissez le fichier",
+                                           filetypes=(("Tout type", "*.*"),))
+    if file_path:
+        FILE_INFO['path'] = file_path
+        load_file_label['text'] = to_nb_chars(file_path, nb=120)
         number_lines_file_label['text'] = number_of_line(FILE_INFO['path'])
         name_file_label['text'] = name_file(FILE_INFO['path'])
+        FILE_INFO['file_name'] = name_file_label['text']
 
 
-# we change dropdown value
+# what to do when we change log type dropdown value
 def change_log_file_type(log_type_var, filter_frames):
     current_log_type = log_type_var.get()
     filter_frames[current_log_type].grid(row=2, column=2,
@@ -92,7 +90,8 @@ def launch_app():
                          font=HEADER_MSG_LABEL)
     header_label.grid(row=0, columnspan=6, padx=20, pady=20)
 
-    load_file_button = Button(mainframe, text='Sélectionner le fichier', command=lambda: open_file(load_file_label, number_lines_file_label, name_file_label))
+    load_file_button = Button(mainframe, text='Sélectionner le fichier', command=lambda: open_file(
+        load_file_label, number_lines_file_label, name_file_label))
     load_file_button.grid(row=1, column=0, sticky=E, padx=20, pady=20)
 
     load_file_label = Label(mainframe, text=FILE_INFO['path'], font="Arial 10 italic")
@@ -104,10 +103,10 @@ def launch_app():
     log_type_var = StringVar(mainframe)
 
     # Set with options
-    choices = list(FILE_PROPERTIES.keys())
-    log_type_var.set("-"*10)  # set the default option
+    log_type_choices = list(FILE_PROPERTIES.keys())
+    log_type_var.set("-" * 10)  # set the default option
 
-    log_file_types = OptionMenu(mainframe, log_type_var, *choices)
+    log_file_types = OptionMenu(mainframe, log_type_var, *log_type_choices)
     log_file_types.grid(row=2, column=1)
 
     filter_frames = {}
@@ -125,7 +124,7 @@ def launch_app():
     number_lines_file_label = Label(mainframe, text='', font="Arial 10 italic")
     number_lines_file_label.grid(row=4, column=1, columnspan=3, sticky=W, padx=20, pady=20)
 
-    for log_type_name in choices:
+    for log_type_name in log_type_choices:
         filter_frame = Frame(mainframe)
         filter_frames[log_type_name] = filter_frame
 
@@ -159,12 +158,9 @@ def launch_app():
             new_search_button.grid(row=column_index, column=2, padx=20, pady=20, sticky=W + E)
             searched_buttons[column_value] = new_search_button
 
-        search_button = Button(filter_frame, text='  RECHERCHER  ', command=do_nothing)
+        search_button = Button(filter_frame, text='  RECHERCHER  ', command=lambda
+            local_searched_columns=searched_columns: show_result_modal(
+            mainframe, log_type_var, local_searched_columns, FILE_INFO['path'], FILE_PROPERTIES))
         search_button.grid(row=len(columns_names), column=1, sticky=W, padx=20, pady=20)
 
-    # table = ScrollableTable(mainframe, ['      Column %s      ' % i for i in range(10)])
-    # table.set_data([[f'Cellule {i}-{j}' for j in range(10)] for i in range(20)])
-    # table.grid(row=len(columns_names) + 3, columnspan=8, sticky=N + E + W + S, padx=20, pady=20)
-
     mainframe.mainloop()
-
