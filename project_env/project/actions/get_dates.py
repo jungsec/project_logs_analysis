@@ -32,7 +32,7 @@ def dates_find(date_user, file_path):#date user
         for lignes in fichier :
             regex = r'^\['+date_user
             date_user #Start by the input user
-            timelo = re.search(r'([[0-9A-Za-z/]+[:0-9]+ [+0-9]+])', lignes)#REGEX to get the date and time section
+            timelo = re.search(r'([[0-9A-Za-z/]+[:0-9]+ [-+0-9]+])', lignes)#REGEX to get the date and time section
         #if the time is find   
             if(timelo):
                 start = re.search(regex, timelo.group(1))#the variable start will get the input user and the matching ip adress

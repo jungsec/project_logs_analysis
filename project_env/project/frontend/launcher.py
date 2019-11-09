@@ -57,7 +57,7 @@ def to_nb_chars(my_string, nb=20):
 
 def open_file(load_file_label, number_lines_file_label, name_file_label):
     file_path = filedialog.askopenfilename(initialdir="/", title="Choisissez le fichier",
-                                           filetypes=(("Tout type", "*.*"),))
+                                           filetypes=(("Tout type", "*"),))
     if file_path:
         FILE_INFO['path'] = file_path
         load_file_label['text'] = to_nb_chars(file_path, nb=120)

@@ -1,5 +1,5 @@
 {
-  "Apache access log": ["Adresse IP ", "Date format[DD/HH/mm/ss]", "Requête ", "Réponse ", "User Agent "],
+  "Apache access log": ["Adresse IP", "Date format[DD/MMM/YYYY:HH:mm:ss]", "Requête", "Réponse", "User Agent"],
   "Linux Syslog": ["Mois (MMM)", "Jour (DD)", "Heure (HH:mm:ss)", "User", "Daemon", "Message"],
   "Linux error.log": ["Date et temps", "Sévérité", "Adresse IP", "Message", "Chemin du fichier d'erreur"]
 }
