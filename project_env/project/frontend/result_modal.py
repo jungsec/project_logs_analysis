@@ -17,6 +17,7 @@ __status__ = ''
 from tkinter import Toplevel, Button, Label, filedialog, messagebox
 from tkinter.constants import *
 from frontend.scrollable_table import ScrollableTable
+from actions.syslog_parser import filter_all_sys_log_fields
 import datetime
 
 ROWS_PER_PAGE = 20
@@ -24,6 +25,8 @@ PAGINATION_INFO = {'page_nb': 1}
 
 
 def fill_with_space_to_nb_chars(my_string, nb=50):
+    # if my_string in ["Requête", "Réponse", "Message"]:
+    #    nb = 90  # Just to fill the table optimally
     nb_space_before_string = (nb - len(my_string)) // 2 if len(my_string) < nb else 0
     nb_space_after_string = max(nb, len(my_string)) - len(my_string) - nb_space_before_string
     return f'{" " * nb_space_before_string}{my_string}{" " * nb_space_after_string}'
@@ -76,7 +79,9 @@ class ResultDialog(Toplevel):
         pagination_label.grid(row=0, column=1, sticky=W + E, padx=20, pady=20)
 
         table = ScrollableTable(self, column_names)
-        table.set_data(get_page(page_nb=PAGINATION_INFO['page_nb'], all_results=all_data))
+
+        page_data = get_page(page_nb=PAGINATION_INFO['page_nb'], all_results=all_data)
+        table.set_data(page_data if len(page_data) else ['' for _ in range(len(column_names))])
         table.grid(row=1, columnspan=3, sticky=N + E + W + S, padx=20, pady=20)
 
         previous_button = Button(self, text='<-- précédent', state=DISABLED,
@@ -97,18 +102,25 @@ class ResultDialog(Toplevel):
 
 
 def show_result_modal(mainframe, log_type_var, local_searched_columns, file_path,
-                      FILE_PROPERTIES):
+                      file_properties):
     """ Open the modal window """
     if not file_path: return
 
-    all_data = [[f"Cellule {i} - {j}" for j in range(len(FILE_PROPERTIES[log_type_var.get()]))
-                 ] for i in range(200)]  # TODO (Kyle) Change this with the method to get filtered results
+    if log_type_var.get() == "Linux Syslog":
+        all_data = filter_all_sys_log_fields(file_path, *[
+            local_searched_columns[file_properties[log_type_var.get()][i]].get(
+            ) for i in range(len(file_properties[log_type_var.get()]))
+        ])
+    else:
+        all_data = [[f"Cellule {i} - {j}" for j in range(len(file_properties[log_type_var.get()]))
+                ] for i in range(200)]  # TODO (Kyle) Change this with the method to get filtered results
+    
     PAGINATION_INFO['page_nb'] = 1 if len(all_data) else 0
     PAGINATION_INFO['page_count'] = (len(all_data) + ROWS_PER_PAGE - 1) // ROWS_PER_PAGE
 
     result = ResultDialog(mainframe, column_names=[
-        fill_with_space_to_nb_chars(column) for column in
-        FILE_PROPERTIES[log_type_var.get()]], all_data=all_data)
+       fill_with_space_to_nb_chars(column) for column in
+       file_properties[log_type_var.get()]], all_data=all_data)
 
     result.transient(mainframe)
     result.grab_set()
