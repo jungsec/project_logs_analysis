@@ -28,7 +28,7 @@ def user_agent_find(agent_user, file_path):
         user_tab = []
         for lignes in fichier :
             regex = r'^'+agent_user #Start by the input user
-            user_agentlo = re.search(r'("[A-Za-z]+/[0-9;/.()A-Za-z -]+)', lignes)#REGEX to get the user agent navigator ect
+            user_agentlo = re.search(r'("[A-Za-z]+/[0-9;/.()A-Za-z -]+.+")', lignes)#REGEX to get the user agent navigator ect
         #If the adresse ip is find   
             if(user_agentlo):
                 start = re.search(regex, user_agentlo.group(1))#the variable start will get the input user and the matching user agent
